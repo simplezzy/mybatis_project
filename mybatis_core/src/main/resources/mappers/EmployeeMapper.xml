@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redcode.mybatis.dao.EmployeeDao">
+<mapper namespace="com.redcode.mybatis.dao.EmployeeMapper">
 
     <!--namespace:名称空间;指定为接口的全类名
         id:唯一标识
@@ -10,13 +10,58 @@
         #{id}:从传递过来的参数中取出id值
         -->
 
-    <select id="selectEmp" resultType="employee">
-        select id,lastName,email from MB_EMPLOYEE where id = #{id}
-    </select>
+    <!--采用接口和映射文件动态绑定
+        namespace:指定为接口的全类名
+        id:为方法名-->
 
-    <!--通过接口/方法与映射文件动态绑定-->
     <!--public Employee getEmployeeById(Integer id)-->
     <select id="getEmployeeById" resultType="com.redcode.mybatis.bean.Employee">
-        select * from MB_EMPLOYEE where id = #{id}
+        select id,lastName,email,gender from MB_EMPLOYEE where id = #{id}
     </select>
+
+    <select id="getEmployeeByIdAndLastName" resultType="com.redcode.mybatis.bean.Employee">
+        SELECT * FROM MB_EMPLOYEE WHERE id=#{id} AND lastName=#{lastName}
+    </select>
+
+    <!--getEmpsByLastNameKile
+        返回的是集合,返回类型要写集合中元素的类型-->
+    <select id="getEmpsByLastNameLike" resultType="com.redcode.mybatis.bean.Employee">
+        SELECT * FROM MB_EMPLOYEE WHERE lastName LIKE #{lastName}
+    </select>
+
+    <!--Map<String,Object> getEmpMapById(Integer id);-->
+    <select id="getEmpMapById" resultType="map">
+        SELECT * FROM MB_EMPLOYEE WHERE id = #{id}
+    </select>
+
+    <!--Map<Integer,Employee> getEmpsMapsById(Integer id);-->
+    <select id="getEmpsMapsByLastNameLike" resultType="com.redcode.mybatis.bean.Employee">
+        SELECT * FROM MB_EMPLOYEE WHERE lastName LIKE #{lastName}
+    </select>
+
+    <!--void addEmployee(Employee employee)
+       parameterType 可以省略
+       mysql支持自增主键,自增主键的获取.mybatis也是利用statement.getGenratedKey()
+           KeyPropertiy:指定对应的主键属性,获取到的自增主键值指定给javaBean的某个属性
+       对于Oracle不支持自增,需要使用序列来模拟的
+           -->
+    <insert id="addEmployee" parameterType="com.redcode.mybatis.bean.Employee"
+            useGeneratedKeys="true" keyProperty="id">
+
+        <!--<selectKey keyProperty="id" order="BEFORE" resultType="Integer">-->
+            <!--编写查询主键的sql语句-->
+            <!--SELECT MB_EMPLOYEE.nextval from table-->
+        <!--</selectKey>-->
+        INSERT INTO MB_EMPLOYEE(lastName,email,gender) VALUES (#{lastName},#{email},#{gender})
+    </insert>
+
+    <!--void deleteEmployeeById(Integer id)-->
+    <delete id="deleteEmployeeById">
+        DELETE FROM MB_EMPLOYEE WHERE id=#{id}
+    </delete>
+
+    <!--void updateEmployee(Employee employee)-->
+    <update id="updateEmployee">
+        UPDATE MB_EMPLOYEE SET lastName=#{lastName},email=#{email},gender=#{gender} WHERE id=#{id}
+    </update>
 </mapper>

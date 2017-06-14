@@ -1,7 +1,7 @@
-package main.java.com.redcode.mybatis.bean;
+package com.redcode.mybatis.dao;
 
 import com.redcode.mybatis.bean.Employee;
-import com.redcode.mybatis.dao.EmployeeMapper;
+import junit.framework.TestCase;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -11,34 +11,26 @@ import org.junit.Test;
 import java.io.InputStream;
 
 /**
- * Created by Erichou on 6/13/17.
+ * Created by Erichou on 6/14/17.
  */
-public class ConnectionTest {
-
+public class EmployeeMapperPlusTest extends TestCase{
 
     public SqlSessionFactory getSqlSessionFactory() throws Exception{
-
         InputStream inputStream = Resources.getResourceAsStream("mybatis/mybatis-config.xml");
         return new SqlSessionFactoryBuilder().build(inputStream);
     }
 
     @Test
-    public void connectionTest() throws Exception{
-
-        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
-        SqlSession openSession = sqlSessionFactory.openSession();
-
+    public void testGetEmpById() throws Exception {
+        SqlSession openSession = getSqlSessionFactory().openSession();
         try {
-            EmployeeMapper employeeMapper = openSession.getMapper(EmployeeMapper.class);
-            Employee employee = employeeMapper.getEmployeeById(1);
-            System.out.println("Employee:" + employee.toString());
+            EmployeeMapperPlus mapperPlus = openSession.getMapper(EmployeeMapperPlus.class);
+            Employee employee = mapperPlus.getEmpById(1002);
+            System.out.println("employee:" + employee);
+
         } finally {
             openSession.close();
         }
-
     }
-
-
-
 
 }

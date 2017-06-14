@@ -1,0 +1,5 @@
+1.select 多种不同结果
+
+2.resultType && resultMap
+  resultMap:
+     自定义封装信息

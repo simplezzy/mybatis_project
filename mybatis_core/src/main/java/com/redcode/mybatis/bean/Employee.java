@@ -1,12 +1,31 @@
+package com.redcode.mybatis.bean;
+
+import org.apache.ibatis.type.Alias;
+
 /**
  * Created by Erichou on 6/13/17.
  */
+
+@Alias("Emp")
 public class Employee {
 
     private Integer id;
     private String lastName;
     private String email;
     private String gender;
+    private Department dept;
+
+    public Employee() {
+        super();
+    }
+
+    //注意:add 有参构造器必须添加无参构造器,以防不能使用
+    public Employee(Integer id, String lastName, String email, String gender) {
+        this.id = id;
+        this.lastName = lastName;
+        this.email = email;
+        this.gender = gender;
+    }
 
     public Integer getId() {
         return id;

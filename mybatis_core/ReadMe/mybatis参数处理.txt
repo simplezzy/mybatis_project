@@ -1,0 +1,61 @@
+1.不同的参数
+单个参数: mybatis不会做特殊处理
+  #{参数名}:取出参数值;
+
+多个参数:mybatis会做特殊处理
+        多个参数会被封装成一个map,
+        key:param1,param2;
+        或者 按照索引;
+        或者命名参数 明确指定封装参数时候的map key:@param("id"); ----推荐
+        或者POJO  正好是业务逻辑的数据模型,就可以直接传入pojo;
+                  #{属性名}:取出传入的pojo属性值
+        或者Map:(多个不相关的数据进行封装):
+                  #{key} 就是对应的值
+
+        或者:Map经常使用,推荐编写一个TO 数据传输对象
+            Page{
+                int index;
+                int size;
+            }
+  #{} 就是从map中获取指定的key值
+  异常:Available parameters are [arg1, arg0, param1, param2]
+   场景:
+    Employee getEmp(@Param("id") Integer id, String lastName);
+      取值: id==>#{id/param1} lastName ==> #{param2}
+    Employee getEmp(Integer id, @Param("e") Employee emp);
+      取值: id==>#{param1} lastName ==> #{param2.lastName/e.lastName}
+
+    //特别注意:如果是Collection类型或者数组,也会封装在map中
+      key:Collection(collection)
+          List(list)
+          Array(array)
+    Employee getEmpById(List<Integer> ids)
+      取值: 取出第一个id:#{list[0]}
+
+   总结:参数多时会封装map,为了不混乱,可以使用注解来指定封装时使用的Key
+        #{key} 即可取值
+  可以参见源码解析
+    ParamNameResolve解析参数封装map的
+
+
+2.参数值的获取
+   #{}: 可以获取map中的值或pojo对象属性的值; 是以预编译的形式,将参数设置到sql语句中;PreparedStatement;防止sql注入
+
+   ${}: 可以获取map中的值或pojo对象属性的值;取出的值直接拼装在sql语句中;会有安全问题
+
+ 多数情况,取参数值应该去使用#{};
+ 当原生jdbc不支持占位符的地方可以使用${}进行拼装
+ eg分表/排序等:
+      按照年份分表拆分
+        select * from ${year}_salary where xxx;
+      排序
+        select * from table order by ${first_name} ${order}
+
+ #{}:更丰富的用法
+     规定参数的一些规则:
+      javaType/jdbcType/mode(存储过程)...
+
+      jdbcType 通常需要在某种特定条件被设置
+        在数据库为null的时候,有些DB不能识别mybatis对null的默认处理,如Oracle(报错 无效的类型)
+        1.#{email,jdbcType=Other};
+        2.全局配置中,setting: jdbcTypeForNull value=NULL
