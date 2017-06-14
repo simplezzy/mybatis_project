@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redcode.mybatis.dao.EmployeeDao">
+
+    <!--namespace:名称空间;指定为接口的全类名
+        id:唯一标识
+        resultType:返回值类型
+        #{id}:从传递过来的参数中取出id值
+        -->
+
+    <select id="selectEmp" resultType="employee">
+        select id,lastName,email from MB_EMPLOYEE where id = #{id}
+    </select>
+
+    <!--通过接口/方法与映射文件动态绑定-->
+    <!--public Employee getEmployeeById(Integer id)-->
+    <select id="getEmployeeById" resultType="com.redcode.mybatis.bean.Employee">
+        select * from MB_EMPLOYEE where id = #{id}
+    </select>
+</mapper>
