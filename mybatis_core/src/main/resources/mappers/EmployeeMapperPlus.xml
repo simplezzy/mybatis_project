@@ -26,4 +26,41 @@
         SELECT * FROM MB_EMPLOYEE WHERE id = #{id}
     </select>
 
+
+    <!--Employee getEmpAndDeptById(Integer id);
+        多表联合查询:级联属性封装结果集
+        一个员工和部门信息封装的案例-->
+    <resultMap id="MyDifEmp" type="com.redcode.mybatis.bean.Employee">
+        <id column="id" property="id"/>
+        <result column="lastName" property="lastName"/>
+        <result column="email" property="email"/>
+        <result column="gender" property="gender"/>
+        <result column="did" property="dept.id"/>
+        <result column="deptName" property="dept.deptName"/>
+    </resultMap>
+
+    <resultMap id="MyDifEmp1" type="com.redcode.mybatis.bean.Employee">
+        <id column="id" property="id"/>
+        <result column="lastName" property="lastName"/>
+        <result column="email" property="email"/>
+        <result column="gender" property="gender"/>
+        <!--指定联合的javaBean
+            property:指定联合哪个对象
+            javaType:指定这个属性对象的类型[不能省略]
+        -->
+        <association property="dept" javaType="com.redcode.mybatis.bean.Department">
+            <id column="did" property="id"/>
+            <result column="deptName" property="deptName"/>
+        </association>
+    </resultMap>
+
+    <select id="getEmpAndDeptById" resultMap="MyDifEmp1">
+       select e.id id,e.lastName lastName,e.email email,e.gender gender,e.d_id d_id,d.id did,d.dept_Name deptName
+       from mybatis.MB_EMPLOYEE e,mybatis.MB_DEPT d
+       where e.d_id = d.id and e.id = #{id};
+    </select>
+
+
+
+
 </mapper>

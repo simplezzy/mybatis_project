@@ -28,6 +28,9 @@ public class EmployeeMapperPlusTest extends TestCase{
             Employee employee = mapperPlus.getEmpById(1002);
             System.out.println("employee:" + employee);
 
+            Employee employee1 = mapperPlus.getEmpAndDeptById(1001);
+            System.out.println("empAndDept:" + employee1);
+
         } finally {
             openSession.close();
         }
